@@ -20,7 +20,7 @@ class GaussianPgAgent(BaseAgent):
         """Performs forward pass on training data, for algorithm."""
         model_inputs = buffer_to((observation, prev_action, prev_reward),
             device=self.device)
-        mu, log_std, value = self.model(*model_inputs)
+        mu, log_std, value = self.model(*model_inputs)[:3]
         return buffer_to((DistInfoStd(mean=mu, log_std=log_std), value), device="cpu")
 
     def initialize(self, env_spaces, share_memory=False,
@@ -47,7 +47,7 @@ class GaussianPgAgent(BaseAgent):
         """
         model_inputs = buffer_to((observation, prev_action, prev_reward),
             device=self.device)
-        mu, log_std, value = self.model(*model_inputs)
+        mu, log_std, value = self.model(*model_inputs)[:3]
         dist_info = DistInfoStd(mean=mu, log_std=log_std)
         action = self.distribution.sample(dist_info)
         agent_info = AgentInfo(dist_info=dist_info, value=value)
